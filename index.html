@@ -111,7 +111,7 @@
                 <i class="far fa-save"></i> Speichern</button>
             </div>
             <div class="col-sm-2">
-              <button type="button" class="btn btn-primary btn-block">
+              <button type="button" class="btn btn-primary btn-block" id="send">
                 <i class="fas fa-paper-plane"></i> Senden</button>
             </div>
           </div>
@@ -143,20 +143,32 @@
             show_mail(mail, els);
           }
           f.val('');
+        } else if(e.key === 'Enter') {
+          validate_mail(f, els);
         }
       });
+    }
+
+    function validate_mail(f, els) {
+      var mail = f.val();
+      if (mail.length > 0) {
+        show_mail(mail, els);
+      }
+      f.val('');
     }
 
     function show_mail(mail, els) {
       var re = /\S+@\S+\.\S+/;
       var cl = 'alert-danger';
+      var sy = '';
       if (re.test(mail)) {
         cl = 'alert-warning';
         if (mail.endsWith('protonmail.com')) {
           cl = 'alert-success';
+          sy = '<i class="fas fa-lock"></i> ';
         }
       }
-      var me = $('<div class="mail ' + cl + '">' + mail + ' </div>');
+      var me = $('<div class="mail ' + cl + '">' + sy + mail + ' </div>');
       var x = $('<a class="fas fa-times" href="#"></a>');
       x.click(function (e) { me.remove(); })
       me.append(x);
@@ -167,6 +179,15 @@
     init_mail_input($('#cc'), $('#cc_els'));
     init_mail_input($('#bcc'), $('#bcc_els'));
 
+    $('#send').click(function(e) {
+      validate_mail($('#to'), $('#to_els'));
+      validate_mail($('#cc'), $('#cc_els'));
+      validate_mail($('#bcc'), $('#bcc_els'));
+
+      if($('#sub').val() === '') {
+        alert('Achtung, Sie haben keinen Betreff eingegeben, trotzdem senden?');
+      }
+    });
   </script>
 </body>
 
